@@ -28,7 +28,7 @@
  */
 package com.impossibl.postgres.utils;
 
-import com.impossibl.postgres.data.Path;
+import com.impossibl.postgres.api.data.Path;
 
 import java.util.Arrays;
 
@@ -77,10 +77,14 @@ public enum GeometryParsers {
    * </pre>
    * @param s The circle to parse.
 <<<<<<< HEAD
+<<<<<<< HEAD
    * @return A 3 elements array where the first 2 doubles represents a point and last element the radius.
 =======
    * @return [p.x, p.y, r]: A 3 elements array where the first 2 doubles represents a center point and the last element the radius.
 >>>>>>> 2de984cf8107e4c377e1ac975926aa43c9cd624e
+=======
+   * @return [p.x, p.y, r]: A 3 elements array where the first 2 doubles represents a center point and the last element the radius.
+>>>>>>> upstream/develop
    */
   public double[] parseCircle(CharSequence s) {
     int max = s.length() - 1;
@@ -147,10 +151,14 @@ public enum GeometryParsers {
    * </pre>
    * @param s The point to parse.
 <<<<<<< HEAD
+<<<<<<< HEAD
    * @return An  array of size 2.
 =======
    * @return [p.x, p.y]
 >>>>>>> 2de984cf8107e4c377e1ac975926aa43c9cd624e
+=======
+   * @return [p.x, p.y]
+>>>>>>> upstream/develop
    */
   public double[] parsePoint(CharSequence s) {
     double[] point = new double[2];
@@ -173,6 +181,7 @@ public enum GeometryParsers {
    * @param s The box to parse.
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
    * @return An  array of size 4 (2 point.)
 =======
    * @return An array of size 4 (2 points.)
@@ -180,6 +189,9 @@ public enum GeometryParsers {
 =======
    * @return An array of size 4 (2 points.)
 >>>>>>> 2de984cf8107e4c377e1ac975926aa43c9cd624e
+=======
+   * @return An array of size 4 (2 points.)
+>>>>>>> upstream/develop
    */
   public double[] parseBox(CharSequence s) {
     PathResult pr = parsePath(false, 2, s, 0);
@@ -202,6 +214,7 @@ public enum GeometryParsers {
    * @param s The lseg to parse.
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
    * @return An  array of size 4 (2 point.)
 =======
    * @return An array of size 4 (2 points.)
@@ -209,6 +222,9 @@ public enum GeometryParsers {
 =======
    * @return An array of size 4 (2 points.)
 >>>>>>> 2de984cf8107e4c377e1ac975926aa43c9cd624e
+=======
+   * @return An array of size 4 (2 points.)
+>>>>>>> upstream/develop
    */
   public double[] parseLSeg(CharSequence s) {
     PathResult pr = parsePath(true, 2, s, 0);

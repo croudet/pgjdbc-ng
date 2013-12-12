@@ -26,48 +26,47 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.impossibl.postgres.data;
-
-import com.impossibl.postgres.types.CompositeType;
+package com.impossibl.postgres.api.data;
 
 import java.util.Arrays;
 
-import static java.util.Objects.requireNonNull;
+/**
+ * Represents an open or closed path.
+ */
+public class Path {
+  private boolean closed;
+  private double[][] points;
 
-
-
-public class Record {
-
-  CompositeType type;
-  Object[] values;
-
-  public Record(CompositeType type, Object[] values) {
-    this.type = requireNonNull(type);
-    this.values = requireNonNull(values);
+  public Path() {
   }
 
-  public CompositeType getType() {
-    return type;
+  public Path(double[][] points, boolean closed) {
+    this.setClosed(closed);
+    this.setPoints(points);
   }
 
-  public void setType(CompositeType type) {
-    this.type = type;
+  public boolean isClosed() {
+    return closed;
   }
 
-  public Object[] getValues() {
-    return values;
+  public void setClosed(boolean closed) {
+    this.closed = closed;
   }
 
-  public void setValues(Object[] values) {
-    this.values = values;
+  public double[][] getPoints() {
+    return points;
+  }
+
+  public void setPoints(double[][] points) {
+    this.points = points;
   }
 
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + type.hashCode();
-    result = prime * result + Arrays.hashCode(values);
+    result = prime * result + (closed ? 1231 : 1237);
+    result = prime * result + Arrays.hashCode(points);
     return result;
   }
 
@@ -77,14 +76,38 @@ public class Record {
       return true;
     if (obj == null)
       return false;
-    if (getClass() != obj.getClass())
+    if (!(obj instanceof Path))
       return false;
-    Record other = (Record) obj;
-    if (!type.equals(other.type))
+    Path other = (Path) obj;
+    if (closed != other.closed)
       return false;
-    if (!Arrays.equals(values, other.values))
+    if (!Arrays.deepEquals(points, other.points))
       return false;
     return true;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder();
+    if (closed) {
+      builder.append('(');
+    }
+    else {
+      builder.append('[');
+    }
+    if (points != null) {
+      for (double[] point: points) {
+        builder.append('(').append(point[0]).append(',').append(point[1]).append("),");
+      }
+      builder.setLength(builder.length() - 1);
+    }
+    if (closed) {
+      builder.append(')');
+    }
+    else {
+      builder.append(']');
+    }
+    return builder.toString();
   }
 
 }

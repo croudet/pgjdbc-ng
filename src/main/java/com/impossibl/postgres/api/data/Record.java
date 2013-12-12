@@ -26,61 +26,65 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.impossibl.postgres.system.procs;
+package com.impossibl.postgres.api.data;
 
-import com.impossibl.postgres.api.data.ACLItem;
-import com.impossibl.postgres.system.Context;
-import com.impossibl.postgres.types.PrimitiveType;
-import com.impossibl.postgres.types.Type;
+import com.impossibl.postgres.types.CompositeType;
 
-import java.io.IOException;
+import java.util.Arrays;
 
-public class ACLItems extends SimpleProcProvider {
+import static java.util.Objects.requireNonNull;
 
-  public ACLItems() {
-    super(new Encoder(), new Decoder(), null, null, "aclitem");
+
+
+public class Record {
+
+  CompositeType type;
+  Object[] values;
+
+  public Record(CompositeType type, Object[] values) {
+    this.type = requireNonNull(type);
+    this.values = requireNonNull(values);
   }
 
-  static class Decoder extends TextDecoder {
-
-    @Override
-    public PrimitiveType getInputPrimitiveType() {
-      return PrimitiveType.ACLItem;
-    }
-
-    @Override
-    public Class<?> getOutputType() {
-      return ACLItem.class;
-    }
-
-    @Override
-    public ACLItem decode(Type type, Short typeLength, Integer typeModifier, CharSequence buffer, Context context) throws IOException {
-
-      return ACLItem.parse(buffer.toString());
-    }
+  public CompositeType getType() {
+    return type;
   }
 
-  static class Encoder extends TextEncoder {
+  public void setType(CompositeType type) {
+    this.type = type;
+  }
 
-    @Override
-    public Class<?> getInputType() {
-      return ACLItem.class;
-    }
+  public Object[] getValues() {
+    return values;
+  }
 
-    @Override
-    public PrimitiveType getOutputPrimitiveType() {
-      return PrimitiveType.ACLItem;
-    }
+  public void setValues(Object[] values) {
+    this.values = values;
+  }
 
-    @Override
-    public void encode(Type type, StringBuilder buffer, Object val, Context context) throws IOException {
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + type.hashCode();
+    result = prime * result + Arrays.hashCode(values);
+    return result;
+  }
 
-      ACLItem item = (ACLItem) val;
-
-      buffer.append(item.toString());
-
-    }
-
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Record other = (Record) obj;
+    if (!type.equals(other.type))
+      return false;
+    if (!Arrays.equals(values, other.values))
+      return false;
+    return true;
   }
 
 }
