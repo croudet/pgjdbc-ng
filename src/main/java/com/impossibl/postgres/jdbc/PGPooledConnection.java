@@ -31,8 +31,8 @@ package com.impossibl.postgres.jdbc;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.sql.ConnectionEvent;
 import javax.sql.ConnectionEventListener;
@@ -57,8 +57,8 @@ public class PGPooledConnection implements PooledConnection {
    * connection.
    */
   public PGPooledConnection(PGConnectionImpl con, boolean autoCommit, boolean isXA) {
-    this.connectionListeners = new ArrayList<ConnectionEventListener>();
-    this.statementListeners = new ArrayList<StatementEventListener>();
+    this.connectionListeners = new CopyOnWriteArrayList<>();
+    this.statementListeners = new CopyOnWriteArrayList<>();
     this.con = con;
     this.last = null;
     this.autoCommit = autoCommit;
@@ -197,10 +197,7 @@ public class PGPooledConnection implements PooledConnection {
    */
   void fireConnectionClosed() {
     ConnectionEvent evt = null;
-    // Copy the listener list so the listener can remove itself during this method call
-    ConnectionEventListener[] local = (ConnectionEventListener[]) connectionListeners.toArray(new ConnectionEventListener[connectionListeners.size()]);
-    for (int i = 0; i < local.length; i++) {
-      ConnectionEventListener listener = local[i];
+    for (ConnectionEventListener listener: connectionListeners) {
       if (evt == null) {
         evt = createConnectionEvent(null);
       }
@@ -213,12 +210,9 @@ public class PGPooledConnection implements PooledConnection {
    */
   void fireConnectionFatalError(SQLException e) {
     ConnectionEvent evt = null;
-    // Copy the listener list so the listener can remove itself during this method call
-    ConnectionEventListener[] local = (ConnectionEventListener[])connectionListeners.toArray(new ConnectionEventListener[connectionListeners.size()]);
-    for (int i = 0; i < local.length; i++) {
-      ConnectionEventListener listener = local[i];
+    for (ConnectionEventListener listener: connectionListeners) {
       if (evt == null) {
-        evt = createConnectionEvent(e);
+        evt = createConnectionEvent(null);
       }
       listener.connectionErrorOccurred(evt);
     }
@@ -283,10 +277,7 @@ public class PGPooledConnection implements PooledConnection {
    */
   void fireStatementClosed(PreparedStatement ps) {
     StatementEvent evt = null;
-    // Copy the listener list so the listener can remove itself during this method call
-    StatementEventListener[] local = (StatementEventListener[]) statementListeners.toArray(new StatementEventListener[statementListeners.size()]);
-    for (int i = 0; i < local.length; i++) {
-      StatementEventListener listener = local[i];
+    for (StatementEventListener listener: statementListeners) {
       if (evt == null) {
         evt = createStatementEvent(ps, null);
       }
@@ -299,12 +290,9 @@ public class PGPooledConnection implements PooledConnection {
    */
   void fireStatementError(PreparedStatement ps, SQLException se) {
     StatementEvent evt = null;
-    // Copy the listener list so the listener can remove itself during this method call
-    StatementEventListener[] local = (StatementEventListener[]) statementListeners.toArray(new StatementEventListener[statementListeners.size()]);
-    for (int i = 0; i < local.length; i++) {
-      StatementEventListener listener = local[i];
+    for (StatementEventListener listener: statementListeners) {
       if (evt == null) {
-        evt = createStatementEvent(ps, se);
+        evt = createStatementEvent(ps, null);
       }
       listener.statementErrorOccurred(evt);
     }
